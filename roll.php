@@ -3,9 +3,9 @@
 header('Content-Type: text/html; charset=UTF-8');
 
 // パラメータに問題があり，サイコロを振らずに終了する
-function fault() {
+function fault($reason) {
     $res = [
-        'status' => 'fault',
+        'status' => $reason,
     ];
     print json_encode($res, JSON_PRETTY_PRINT);
     exit();
@@ -32,14 +32,14 @@ if (isset($_POST["name"]) and isset($_POST["type"])) {
     $type = htmlspecialchars($_POST["type"]);
 
     if ($name === '') {
-        fault();
+        fault("fault: name is empty");
     }
 
     if (preg_match("/1d(4|6|8|10|100)/", $type)) {
         roll($name, intval(substr($type, 2)));
     } else {
-        fault();
+        fault("fault: invalid type");
     }
 } else {
-    fault();
+    fault("fault: insufficient parameters");
 }
